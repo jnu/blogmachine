@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { connectToStore } from '../../../lib/decorators/redux';
+import { connectToStore } from '../../dreija';
 import { Link } from 'react-router';
-import { fetchIndexIfNecessary } from '../../../actions';
+import { fetchIndexIfNecessary } from '../../dreija/actions';
 
 // const ITEM_HEIGHT = 30;
 

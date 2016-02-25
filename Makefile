@@ -1,15 +1,15 @@
 BUILD                  := ./dist
 NODE_MODULES           := ./node_modules
 NPM_BIN                := $(shell npm bin)
-DEV_CONTAINER_TAG      := joen/dreija:dev
-DEV_CONTAINER_NAME     := dreija-dev
-RUNNING_DEV_CONTAINER  := $(shell docker ps | grep dreija-dev | awk '{print $$2}')
-EXISTING_DEV_CONTAINER = $(shell docker ps -a | grep dreija-dev | awk '{print $$2}')
+DEV_CONTAINER_TAG      := joen/blogmachine:dev
+DEV_CONTAINER_NAME     := blogmachine-dev
+RUNNING_DEV_CONTAINER  := $(shell docker ps | grep blogmachine-dev | awk '{print $$2}')
+EXISTING_DEV_CONTAINER = $(shell docker ps -a | grep blogmachine-dev | awk '{print $$2}')
 DOCKER_MACHINE_IP      := $(shell docker-machine ip default)
 SHRINKWRAP             = $(shell cat package.json | md5).pkghash
 
 
-.PHONY: build clean install test lint watch devimg cleandevcontainer clean-build
+.PHONY: build clean install test lint watch devimg cleandevcontainer clean-build img
 
 all: build
 
@@ -52,7 +52,6 @@ cleandevcontainer:
 
 devimgup: devimg cleandevcontainer
 	docker run --rm -p 3030:3030 -e DBHOSTNAME="$(DOCKER_MACHINE_IP)" --name $(DEV_CONTAINER_NAME) $(DEV_CONTAINER_TAG)
-
 
 watch: $(NODE_MODULES)
 	$(NPM_BIN)/webpack --watch

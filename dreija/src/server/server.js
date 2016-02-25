@@ -4,16 +4,13 @@ import express from 'express';
 import spiderDetector from 'spider-detector';
 import tracer from 'tracer';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
-import { Root, Routes } from '../shared/components';
-import configureStore from '../shared/configureStore';
 import { createElement } from 'react';
 import { match, createMemoryHistory } from 'react-router';
 import proxy from 'express-http-proxy';
-import { DB_NAME, DB_HOST } from './config';
 import { encode } from '../shared/lib/encoding';
 import Immutable from 'immutable';
-//import utf8 from 'utf8';
-
+import dreija from '../../';
+import configureStore from '../shared/configureStore';
 
 
 
@@ -21,9 +18,11 @@ import Immutable from 'immutable';
 // Constants
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-const logger = tracer.colorConsole();
+const Root = dreija.root();
 
-const PORT = process.env.PORT || 3030;
+const routes = dreija.routes();
+
+const logger = tracer.colorConsole();
 
 const app = express();
 
@@ -109,7 +108,7 @@ app.use(function handleIndexRoute(req, res, next) {
     history.replace(req.url);
 
     // Run router to match requests
-    match({ routes: Routes, history }, (err, redirectLocation, renderProps) => {
+    match({ routes, history }, (err, redirectLocation, renderProps) => {
         if (err) {
             logger.error('Failed to match route', err);
             res.status(500).send(err);
@@ -186,10 +185,18 @@ app.use(function handleIndexRoute(req, res, next) {
 // Init
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-app.listen(PORT, function handleAppStart(err) {
-    if (err) {
-        logger.error(`Failed to bring up server on ${PORT}. Error: ${err}`);
-        return;
+if (require.main === module) {
+    app.listen(PORT, function handleAppStart(err) {
+        if (err) {
+            logger.error(`Failed to bring up server on ${PORT}. Error: ${err}`);
+            return;
+        }
+        logger.info(`Listening on ${PORT}`);
+    });
+}
+else {
+    module.exports = {
+        dreija,
+        app
     }
-    logger.info(`Listening on ${PORT}`);
-});
+}
