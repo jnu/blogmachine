@@ -1,12 +1,8 @@
-import dreija from '../dreija';
-
 import Routes from './Routes';
 
-dreija
-    .routes(Routes)
-    .dbname('joenoodles')
-    .dbhost(`http://${DBHOSTNAME}:5984`)
-
-
-
-export default dreija;
+export default (dreija, env) => {
+    dreija
+        .routes(Routes)
+        .dbname('joenoodles')
+        .dbhost(`http://${env.DBHOSTNAME}:5984`);
+};

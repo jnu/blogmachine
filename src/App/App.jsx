@@ -8,7 +8,9 @@ import {
     IS_FETCHING_KEY
 } from '../../dreija/constants';
 
+
 const HIDE_STYLE = { display: 'none' };
+
 
 @connectToStore
 class App extends Component {

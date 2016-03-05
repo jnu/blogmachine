@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connectToStore } from '../../../lib/decorators/redux';
-import { fetchPostIfNecessary } from '../../../actions';
+import { connectToStore } from '../../dreija';
+import { fetchPostIfNecessary } from '../../dreija/actions';
 
 
 @connectToStore
