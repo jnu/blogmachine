@@ -17,6 +17,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
     "dreija": "git+https://github.com/jnu/dreija.git",
+    "eslint": "^2.2.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-redux": "^4.2.1",
