@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { connectToStore } from '../../dreija';
+import { connectToStore } from 'dreija';
+import { fetchIndexIfNecessary } from 'dreija/actions';
 import { Link } from 'react-router';
-import { fetchIndexIfNecessary } from '../../dreija/actions';
 
 // const ITEM_HEIGHT = 30;
 
