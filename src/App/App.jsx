@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { connectToStore } from '../../dreija';
-import eyeClosePng from '../../assets/img/eye_close.png';
-import eyeOpenPng from '../../assets/img/eye_open.png';
+import { connectToStore } from 'dreija';
 import {
     IS_FETCHING_INDEX_KEY,
     IS_FETCHING_KEY
-} from '../../dreija/constants';
+} from 'dreija/constants';
+import eyeClosePng from '../../assets/img/eye_close.png';
+import eyeOpenPng from '../../assets/img/eye_open.png';
+
 
 
 const HIDE_STYLE = { display: 'none' };

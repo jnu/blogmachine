@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connectToStore } from '../../dreija';
-import { fetchPostIfNecessary } from '../../dreija/actions';
+import { connectToStore } from 'dreija';
+import { fetchPostIfNecessary } from 'dreija/actions';
 
 
 @connectToStore
