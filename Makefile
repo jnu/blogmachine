@@ -54,4 +54,4 @@ devimgup: devimg cleandevcontainer
 	docker run --rm -p 3030:3030 -e DBHOSTNAME="$(DOCKER_MACHINE_IP)" --name $(DEV_CONTAINER_NAME) $(DEV_CONTAINER_TAG)
 
 watch: $(NODE_MODULES)
-	node node_modules/dreija/bin/dreija-dev.js --app ./src/index.js --env DBHOSTNAME="$(DOCKER_MACHINE_IP)"
+	$(NPM_BIN)/dreija-dev --app ./src/index.js --env DBHOSTNAME="$(DOCKER_MACHINE_IP)"
