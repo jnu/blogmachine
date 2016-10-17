@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:argon
 MAINTAINER Joe Nudell <joenudell@gmail.com>
 
 # Set locale
@@ -26,5 +26,5 @@ RUN npm install
 # Copy built app
 COPY dist /usr/src/app/dist
 
-EXPOSE 3030
 CMD [ "node", "dist/server.js" ]
+EXPOSE 3030

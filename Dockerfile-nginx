@@ -1,0 +1,25 @@
+FROM ubuntu
+RUN apt-get update && apt-get install -y nginx
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
+RUN rm -rf /etc/nginx/sites-enabled/default
+EXPOSE 80 443
+
+# Copy app
+RUN mkdir -p /usr/src/app
+RUN chown -R www-data:www-data /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy built app
+COPY dist /usr/src/app/dist
+
+
+# Configure nginx
+COPY nginx/blogmachine.conf /etc/nginx/sites-enabled/blogmachine
+
+
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+

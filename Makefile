@@ -9,12 +9,12 @@ DOCKER_MACHINE_IP      := $(shell docker-machine ip default)
 SHRINKWRAP             = $(shell cat package.json | md5).pkghash
 
 
-.PHONY: build clean install test lint watch devimg cleandevcontainer clean-build img
+.PHONY: build clean install test lint watch devimg cleandevcontainer clean-build img nginximg
 
 all: build
 
 build: clean-build test $(SHRINKWRAP)
-	NODE_ENV=production $(NPM_BIN)/webpack --bail
+	$(NPM_BIN)/dreija-dev --app ./src/index.js --env DBHOSTNAME="http://db:5984"
 
 $(SHRINKWRAP): $(NODE_MODULES)
 	find . -name '*.pkghash' -delete
@@ -50,8 +50,15 @@ cleandevcontainer:
 		docker rm $(DEV_CONTAINER_NAME); \
 	fi
 
-devimgup: devimg cleandevcontainer
-	docker run --rm -p 3030:3030 -e DBHOSTNAME="$(DOCKER_MACHINE_IP)" --name $(DEV_CONTAINER_NAME) $(DEV_CONTAINER_TAG)
+devimgup:
+	# devimg cleandevcontainer
+	docker run --rm -p 3030:3030 --link db:db --name $(DEV_CONTAINER_NAME) $(DEV_CONTAINER_TAG)
+
+nginximg:
+	docker build -t joen/blogmachine:nginx -f Dockerfile-nginx .
+
+nginximgup:
+	docker run --rm -p 80:80 -p 443:443 --link db:db --link blog:blog --name nginx joen/blogmachine:nginx
 
 watch: $(NODE_MODULES)
-	$(NPM_BIN)/dreija-dev --app ./src/index.js --env DBHOSTNAME="$(DOCKER_MACHINE_IP)"
+	$(NPM_BIN)/dreija-dev --watch --app ./src/index.js --env DBHOSTNAME="http://db:5984"
