@@ -9,7 +9,7 @@ DOCKER_MACHINE_IP      := $(shell docker-machine ip default)
 SHRINKWRAP             = $(shell cat package.json | md5).pkghash
 
 
-.PHONY: build clean install test lint watch devimg cleandevcontainer clean-build img nginximg
+.PHONY: build clean install test lint watch devimg prodimg cleandevcontainer clean-build img nginximg
 
 all: build
 
@@ -40,6 +40,11 @@ $(NODE_MODULES):
 
 devimg: build
 	docker build -t "$(DEV_CONTAINER_TAG)" .
+
+prodimg: clean-build
+	NODE_ENV=production $(NPM_BIN)/dreija-dev --app ./src/index.js --env DBHOSTNAME="http://db:5984"
+	docker build -t joen/blogmachine:prod .
+	docker build -t joen/blogmachine:nginx -f Dockerfile-nginx .
 
 cleandevcontainer:
 	# Don't try to remove / kill nonexistant containers, otherwise errors
