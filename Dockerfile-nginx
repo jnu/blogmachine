@@ -8,10 +8,10 @@ EXPOSE 80 443
 # Copy app
 RUN mkdir -p /usr/src/app
 RUN chown -R www-data:www-data /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/dist
 
 # Copy built app
-COPY dist /usr/src/app/dist
+COPY dist/public /usr/src/app/dist/public
 
 
 # Configure nginx

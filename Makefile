@@ -1,58 +1,28 @@
-BUILD                  := ./dist
-NODE_MODULES           := ./node_modules
-NPM_BIN                := $(shell npm bin)
-DEV_CONTAINER_TAG      := joen/blogmachine:dev
-DEV_CONTAINER_NAME     := blogmachine-dev
-SHRINKWRAP             = .pkghash-$(shell cat package.json | md5)
+NPM_BIN := $(shell npm bin)
 
+.PHONY: install build build-prod use-prod watch prodimg nginximg app deploy
 
-.PHONY: all build build-prod set-env-prod lint test clean watch prodimg nginximg appimg deploy
+install:
+	yarn install
 
-all: test build
-
-$(DIST): $(SHRINKWRAP)
+build: install
 	$(NPM_BIN)/dreija-dev --app ./src/index.js --env DBHOSTNAME="http://db:5984"
 
-build: $(DIST)
+build-prod:install
+	NODE_ENV=production $(NPM_BIN)/dreija-dev --app ./src/index.js --env DBHOSTNAME="http://db:5984"
 
-set-env-prod:
-	export NODE_ENV=production
+watch: install
+	$(NPM_BIN)/dreija-dev --watch --app ./src/index.js --env DBHOSTNAME="http://db:5984"
 
-build-prod: set-env-prod $(SHRINKWRAP) test build
-
-$(SHRINKWRAP): $(NODE_MODULES)
-	find . -name '*.pkghash' -delete
-	npm prune
-	npm shrinkwrap
-	touch $(SHRINKWRAP)
-
-lint: $(NODE_MODULES)
-	$(NPM_BIN)/eslint  --ext .js,.jsx ./src
-
-test: lint
-
-clean: clean-build
-	rm -rf $(BUILD)
-	find . -name '*.pkghash' -delete
-	rm -rf $(NODE_MODULES)
-
-$(NODE_MODULES):
-	npm install
-	npm prune
-
-prodimg: build-prod
+prodimg:
 	docker build -t joen/blogmachine:prod .
-	docker build -t joen/blogmachine:nginx -f Dockerfile-nginx .
 
 nginximg: build-prod
 	docker build -t joen/blogmachine:nginx -f Dockerfile-nginx .
 
-watch: $(NODE_MODULES)
-	$(NPM_BIN)/dreija-dev --watch --app ./src/index.js --env DBHOSTNAME="http://db:5984"
+app: nginximg prodimg
 
-appimg: nginximg prodimg
+deploy: app
 	docker push joen/blogmachine:nginx
 	docker push joen/blogmachine:prod
-
-deploy: build-prod appimg
 	ssh jnuaws 'bash -s' < ./util/remote_deploy.sh
