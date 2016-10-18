@@ -1,47 +1,44 @@
 FROM node:argon
 MAINTAINER Joe Nudell <joenudell@gmail.com>
 
+# Set up yarn (npm replacement) debian package repo
+# RUN apt-key adv --keyserver pgp.mit.edu --recv D101F7899D41F3C3
+# RUN echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
 # Set locale
 RUN apt-get update && \
+    # apt-get install yarn && \
     apt-get install -y --no-install-recommends apt-utils && \
     apt-get install -y --no-install-recommends locales
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
-RUN mkdir -p /tmp/npm-cache/base && \
-    mkdir -p /tmp/npm-cache/current && \
-    mkdir -p /usr/src/app
-RUN npm install -g npm@3
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 
+# Set up yarn
+RUN mkdir -p /opt/yarn && \
+    cd /opt/yarn && \
+    wget https://yarnpkg.com/latest.tar.gz && \
+    tar zvxf latest.tar.gz
 
-# Install dependencies from an old version of npm shrinkwrap, so new versions
-# can be layered incrementally on top of it.
-WORKDIR /tmp/npm-cache/base
-COPY Docker-npm-shrinkwrap-base.json npm-shrinkwrap.json
-COPY Docker-package-base.json package.json
-RUN npm install && \
-    cp -a node_modules /tmp/npm-cache/current
+# Set up cached dependencies
+RUN mkdir -p /tmp/npm-cache && \
+    mkdir -p /usr/src/app
 
-
-
-# Build app
-WORKDIR /usr/src/app/current
-
-# Build deps - cached where possible
+# Install dependencies
+WORKDIR /tmp/npm-cache
 COPY package.json package.json
-COPY npm-shrinkwrap.json npm-shrinkwrap.json
-RUN npm install && \
-    npm prune
+COPY yarn.lock yarn.lock
+RUN /opt/yarn/dist/bin/yarn install
 
 # Copy built app
 WORKDIR /usr/src/app
 COPY . /usr/src/app/
-RUN cp -a /tmp/npm-cache/current . && \
-    make build-prod
+RUN cp -a /tmp/npm-cache/node_modules . && \
+    NODE_ENV=production $(npm bin)/dreija --app ./src/index.js --env DBHOSTNAME="http://db:5984"
 
 CMD [ "node", "dist/server.js" ]
 EXPOSE 3030
