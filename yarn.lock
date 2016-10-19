@@ -1813,9 +1813,9 @@ download@^4.0.0, download@^4.1.2:
     vinyl-fs "^2.2.0"
     ware "^1.2.0"
 
-dreija@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/dreija/-/dreija-0.1.4.tgz#351cdbcc7123ce512d3b9b9778bfc4116c09ec48"
+dreija@0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/dreija/-/dreija-0.1.5.tgz#1c2bb8e781765f50ee042274fe15b16621300736"
   dependencies:
     babel "^6.3.26"
     babel-core "^6.4.5"
