@@ -40,7 +40,8 @@ COPY ./src /usr/src/app/src
 COPY ./assets /usr/src/app/assets
 #RUN ln -s /tmp/npm-cache/node_modules ./
 RUN cp -r /tmp/npm-cache/node_modules ./node_modules
-RUN NODE_ENV=production ./node_modules/.bin/dreija-dev --app ./src/index.js --env DBHOSTNAME="http://db:5984"
+RUN ln -s /tmp/npm-cache/package.json .
+RUN NODE_ENV=production $(npm bin)/dreija --app ./src/index.js --env DBHOSTNAME="http://db:5984"
 
 CMD [ "node", "dist/server.js" ]
 EXPOSE 3030
