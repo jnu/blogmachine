@@ -1,6 +1,6 @@
 NPM_BIN := $(shell npm bin)
 
-.PHONY: install build build-prod use-prod watch prodimg nginximg app deploy
+.PHONY: install build build-prod use-prod watch image deploy
 
 install:
 	yarn install
@@ -14,15 +14,9 @@ build-prod:install
 watch: install
 	$(NPM_BIN)/dreija --watch --app ./src/index.js --env DBHOSTNAME="http://db:5984"
 
-prodimg:
+image:
 	docker build -t joen/blogmachine:prod .
 
-nginximg: build-prod
-	docker build -t joen/blogmachine:nginx -f Dockerfile-nginx .
-
-app: nginximg prodimg
-
-deploy: app
-	docker push joen/blogmachine:nginx
+deploy: image
 	docker push joen/blogmachine:prod
 	ssh jnuaws 'bash -s' < ./util/remote_deploy.sh
