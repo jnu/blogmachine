@@ -4,5 +4,6 @@ export default (dreija, env) => {
     dreija
         .routes(Routes)
         .dbname('joenoodles')
-        .dbhost(`${env.DBHOSTNAME}`);
+        .dbhost(`${env.DBHOSTNAME}`)
+        .redishost(`${env.REDISHOST}`);
 };

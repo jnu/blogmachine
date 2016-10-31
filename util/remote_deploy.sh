@@ -10,12 +10,16 @@
 # This ensures fingerprinted bundles referenced by the static markup will be
 # found by nginx when it serves the assets.
 
+# Run redis w/ persistent storage
+sudo docker pull redis:alpine
+sudo docker run --name redis -d redis:alpine redis-server --appendonly yes
+
 sudo docker pull joen/blogmachine:prod
 
 # Run NodeJS server (prerendering + API)
 sudo docker kill blog
 sudo docker rm blog
-sudo docker run -d -p 3030:3030 --link db:db --name blog joen/blogmachine:prod node dist/server.js
+sudo docker run -d -p 3030:3030 --link db:db --link redis:redis --name blog joen/blogmachine:prod node dist/server.js
 
 # Run NginX (static asset server and reverse proxy)
 sudo docker kill nginx
