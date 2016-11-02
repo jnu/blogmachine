@@ -12,7 +12,7 @@ build-prod:install
 	NODE_ENV=production $(NPM_BIN)/dreija --app ./src/index.js --env DBHOSTNAME="http://db:5984" --env REDISHOST="redis"
 
 watch: install
-	$(NPM_BIN)/dreija --watch --app ./src/index.js --env DBHOSTNAME="http://localhost:5984" --env REDISHOST="localhost"
+	$(NPM_BIN)/dreija --watch --app ./src/index.js --env DBHOSTNAME="http://docker.local:5984" --env REDISHOST="docker.local"
 
 image:
 	docker build -t joen/blogmachine:prod .
