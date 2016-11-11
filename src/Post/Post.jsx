@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { withData } from 'dreija';
-import { fetchResource } from 'dreija/actions';
+import { ensureResource } from 'dreija/actions';
+import Immutable from 'immutable';
 
 
 @withData({
-    fetch: (dispatch, { id }) => dispatch(fetchResource('posts', id)),
+    fetch: (dispatch, { id }) => dispatch(ensureResource('posts', id)),
     derive: (state, props) => {
-        const posts = state.root.get('data');
-        const post = posts.get(props.params.id);
+        const { id } = props.params;
+        const post = state.resource.getIn(
+            ['posts', '@@resources', id, '@@resources'],
+            Immutable.Map()
+        );
         return { post };
     }
 })

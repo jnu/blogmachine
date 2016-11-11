@@ -9,6 +9,6 @@ export default (dreija, env) => {
         .views(views)
         .auth(auth)
         .dbname('joenoodles')
-        .dbhost(`${env.DBHOSTNAME}`)
-        .redishost(`${env.REDISHOST}`);
+        .dbhost(env.DBHOST)
+        .redishost(env.REDISHOST);
 };

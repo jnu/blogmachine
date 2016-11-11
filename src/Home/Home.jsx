@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import { withData } from 'dreija';
-import { fetchResourceList } from 'dreija/actions';
+import { ensureResourceList } from 'dreija/actions';
 import { Link } from 'react-router';
+import Immutable from 'immutable';
 
 // const ITEM_HEIGHT = 30;
 
 
 @withData({
-    fetch: dispatch => dispatch(fetchResourceList('posts', 'index')),
+    fetch: dispatch => dispatch(ensureResourceList('posts', 'index')),
     derive: state => {
-        const posts = state.posts.get('data');
+        const allPosts = state.resource.getIn(['posts', '@@resources'], Immutable.Map());
+        const posts = allPosts.entrySeq().toList().map(([key, val]) => ({
+            _id: key,
+            title: val.getIn(['@@resources', 'title'])
+        })).toArray();
         return {
-            isFetchingIndex: state.root.get('isFetchingIndex'),
-            posts: posts ? posts.toList().toJS() : []
+            isFetchingIndex: false, //state.root.get('isFetchingIndex'),
+            posts
         };
     }
 })
