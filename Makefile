@@ -19,4 +19,5 @@ image:
 
 deploy: image
 	docker push joen/blogmachine:prod
+	scp ./secrets.json jnuaws:~/secrets.json
 	ssh jnuaws 'bash -s' < ./util/remote_deploy.sh

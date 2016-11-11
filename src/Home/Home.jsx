@@ -1,31 +1,22 @@
 import React, { Component } from 'react';
-import { connectToStore } from 'dreija';
-import { fetchIndexIfNecessary } from 'dreija/actions';
+import { withData } from 'dreija';
+import { fetchResourceList } from 'dreija/actions';
 import { Link } from 'react-router';
 
 // const ITEM_HEIGHT = 30;
 
 
-@connectToStore
-class Home extends Component {
-
-    static deriveProps(state) {
-        let posts = state.root.get('data').filter((v, k) => v.get('type') === 'post');
-
+@withData({
+    fetch: dispatch => dispatch(fetchResourceList('posts', 'index')),
+    derive: state => {
+        const posts = state.posts.get('data');
         return {
             isFetchingIndex: state.root.get('isFetchingIndex'),
             posts: posts ? posts.toList().toJS() : []
         };
     }
-
-    static fetchData(dispatch) {
-        return dispatch(fetchIndexIfNecessary());
-    }
-
-    componentDidMount() {
-        let { dispatch } = this.props;
-        Home.fetchData(dispatch);
-    }
+})
+class Home extends Component {
 
     _renderPostItem(post) {
         const {  _id, title } = post;

@@ -19,9 +19,23 @@ sudo docker pull joen/blogmachine:prod
 # Run NodeJS server (prerendering + API)
 sudo docker kill blog
 sudo docker rm blog
-sudo docker run -d -p 3030:3030 --link db:db --link redis:redis --name blog joen/blogmachine:prod node dist/server.js
+sudo docker run -d \
+                -p 3030:3030 \
+                --link db:db \
+                --link redis:redis \
+                --name blog \
+                -v /home/ubuntu/secrets.json:/etc/secrets.json
+                joen/blogmachine:prod \
+                node dist/server.js -s /etc/secrets.json
 
 # Run NginX (static asset server and reverse proxy)
 sudo docker kill nginx
 sudo docker rm nginx
-sudo docker run -d -p 80:80 -p 443:443 --link db:db --link blog:blog --name nginx joen/blogmachine:prod nginx -g "daemon off;"
+sudo docker run -d \
+                -p 80:80 \
+                -p 443:443 \
+                --link db:db \
+                --link blog:blog \
+                --name nginx \
+                joen/blogmachine:prod \
+                nginx -g "daemon off;"

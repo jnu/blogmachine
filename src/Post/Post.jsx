@@ -1,25 +1,17 @@
 import React, { Component } from 'react';
-import { connectToStore } from 'dreija';
-import { fetchPostIfNecessary } from 'dreija/actions';
+import { withData } from 'dreija';
+import { fetchResource } from 'dreija/actions';
 
 
-@connectToStore
-class Post extends Component {
-
-    static fetchData(dispatch, { id }) {
-        return dispatch(fetchPostIfNecessary(id));
-    }
-
-    static deriveProps(state, props) {
+@withData({
+    fetch: (dispatch, { id }) => dispatch(fetchResource('posts', id)),
+    derive: (state, props) => {
         const posts = state.root.get('data');
         const post = posts.get(props.params.id);
         return { post };
     }
-
-    componentDidMount() {
-        const { dispatch, params } = this.props;
-        Post.fetchData(dispatch, params);
-    }
+})
+class Post extends Component {
 
     _renderDebug() {
         return DEBUG && (

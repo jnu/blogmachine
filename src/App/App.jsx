@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { connectToStore } from 'dreija';
+import { withData } from 'dreija';
 import {
     IS_FETCHING_INDEX_KEY,
     IS_FETCHING_KEY
@@ -13,10 +13,8 @@ import eyeOpenPng from '../../assets/img/eye_open.png';
 const HIDE_STYLE = { display: 'none' };
 
 
-@connectToStore
-class App extends Component {
-
-    static deriveProps(state) {
+@withData({
+    derive: state => {
         let { root } = state;
 
         let data = root.get('data');
@@ -27,6 +25,8 @@ class App extends Component {
 
         return { isFetchingSomething };
     }
+})
+class App extends Component {
 
     render() {
         const { isFetchingSomething } = this.props;
