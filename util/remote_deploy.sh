@@ -40,3 +40,6 @@ sudo docker run -d \
                 -v /home/ubuntu/secrets:/etc/secrets \
                 joen/blogmachine:prod \
                 nginx -g "daemon off;"
+
+# Clean up unused images
+sudo docker images | grep \<none\> | awk '{print $3}' | xargs sudo docker rmi

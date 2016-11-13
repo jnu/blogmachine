@@ -51,7 +51,6 @@ WORKDIR /tmp/npm-cache
 COPY package.json package.json
 COPY yarn.lock yarn.lock
 RUN /opt/yarn/dist/bin/yarn install
-COPY Makefile Makefile
 
 
 # Copy built app
@@ -61,7 +60,9 @@ COPY ./assets /usr/src/app/assets
 #RUN ln -s /tmp/npm-cache/node_modules ./
 RUN cp -r /tmp/npm-cache/node_modules ./node_modules
 RUN ln -s /tmp/npm-cache/package.json .
-RUN ln -s /tmp/npm-cache/Makefile .
+
+# Build
+COPY Makefile Makefile
 RUN make just-build-prod
 
 
