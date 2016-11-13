@@ -2,6 +2,8 @@
 *.dump
 *.psd
 *.log
+*.crt
+*.key
 *.pkghash
 img/src/
 deprecated/

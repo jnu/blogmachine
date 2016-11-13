@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { withData } from 'dreija';
 import {
-    IS_FETCHING_INDEX_KEY,
-    IS_FETCHING_KEY
-} from 'dreija/constants';
+    isFetching
+} from 'dreija/helpers';
 import eyeClosePng from '../../assets/img/eye_close.png';
 import eyeOpenPng from '../../assets/img/eye_open.png';
 
@@ -14,17 +13,7 @@ const HIDE_STYLE = { display: 'none' };
 
 
 @withData({
-    derive: state => {
-        let { root } = state;
-
-        let data = root.get('data');
-
-        let isFetchingSomething = !!root.get(IS_FETCHING_INDEX_KEY) || (
-            !!data && data.find((v, k) => !!v.get(IS_FETCHING_KEY))
-        );
-
-        return { isFetchingSomething };
-    }
+    derive: state => ({ isFetchingSomething: isFetching(state) })
 })
 class App extends Component {
 
