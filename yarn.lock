@@ -2137,9 +2137,9 @@ download@^4.0.0, download@^4.1.2:
     vinyl-fs "^2.2.0"
     ware "^1.2.0"
 
-dreija@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/dreija/-/dreija-0.2.1.tgz#2df86cd0c8f4cfc5c7c7f1f8b7eb84ccad1dc914"
+dreija@0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/dreija/-/dreija-0.2.4.tgz#8da6bf31de75deafb754ad932b208c5e0e32b6ad"
   dependencies:
     babel "^6.3.26"
     babel-core "^6.4.5"
@@ -2169,7 +2169,7 @@ dreija@0.2.1:
     html-webpack-plugin "^2.8.1"
     image-loader "0.0.1"
     image-webpack-loader "^1.6.3"
-    immutable "^3.7.6"
+    immutable "3.8.1"
     isomorphic-fetch "^2.2.1"
     jodid25519 "^1.0.2"
     jsbn "^0.1.0"
@@ -3382,7 +3382,7 @@ imagemin@^4.0.0:
     imagemin-optipng "^4.0.0"
     imagemin-svgo "^4.0.0"
 
-immutable@^3.7.6:
+immutable@^3.7.6, immutable@3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
 
