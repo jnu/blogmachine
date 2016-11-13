@@ -2,7 +2,7 @@ NPM_BIN   := $(shell npm bin)
 DOCKER_IP := $(shell docker-machine ip)
 
 
-.PHONY: install build build-prod use-prod just-watch watch image deploy
+.PHONY: install build build-prod just-build-prod just-watch watch image deploy
 
 install:
 	yarn install
@@ -10,7 +10,9 @@ install:
 build: install
 	$(NPM_BIN)/dreija --app ./src/index.js --env DBHOST="db" --env REDISHOST="redis"
 
-build-prod:install
+build-prod: install just-build-prod
+
+just-build-prod:
 	NODE_ENV=production $(NPM_BIN)/dreija --app ./src/index.js --env DBHOST="db" --env REDISHOST="redis"
 
 watch: install just-watch

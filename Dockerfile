@@ -51,7 +51,7 @@ WORKDIR /tmp/npm-cache
 COPY package.json package.json
 COPY yarn.lock yarn.lock
 RUN /opt/yarn/dist/bin/yarn install
-
+COPY Makefile Makefile
 
 
 # Copy built app
@@ -61,7 +61,8 @@ COPY ./assets /usr/src/app/assets
 #RUN ln -s /tmp/npm-cache/node_modules ./
 RUN cp -r /tmp/npm-cache/node_modules ./node_modules
 RUN ln -s /tmp/npm-cache/package.json .
-RUN NODE_ENV=production $(npm bin)/dreija --app ./src/index.js --env DBHOSTNAME="http://db:5984"
+RUN ln -s /tmp/npm-cache/Makefile .
+RUN make just-build-prod
 
 
 
