@@ -73,4 +73,20 @@
 
     }
 
+    .debug {
+        overflow: scroll;
+        border: thin solid black;
+        position: relative;
+        &:before{
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: black;
+            content: 'debug';
+            color: white;
+            font-size: 8px;
+            padding: 2px;
+        }
+    }
+
 }
