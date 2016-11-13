@@ -24,9 +24,9 @@ sudo docker run -d \
                 --link db:db \
                 --link redis:redis \
                 --name blog \
-                -v /home/ubuntu/secrets.json:/etc/secret/secrets.json \
+                -v /home/ubuntu/secrets:/etc/secrets \
                 joen/blogmachine:prod \
-                node dist/server.js -s /etc/secret/secrets.json -h http://jnu.works
+                node dist/server.js -s /etc/secrets/secrets.json -h http://jnu.works
 
 # Run NginX (static asset server and reverse proxy)
 sudo docker kill nginx
@@ -37,6 +37,6 @@ sudo docker run -d \
                 --link db:db \
                 --link blog:blog \
                 --name nginx \
-                -v /home/ubuntu/secret/ssl:/etc/secret/ssl \
+                -v /home/ubuntu/secrets:/etc/secrets \
                 joen/blogmachine:prod \
                 nginx -g "daemon off;"

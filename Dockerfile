@@ -1,4 +1,6 @@
 FROM node:argon
+# TODO use alpine image. need to update to use apk instead of apt-get
+# FROM mhart/alpine-node:4.6
 MAINTAINER Joe Nudell <joenudell@gmail.com>
 
 # Set up yarn (npm replacement) debian package repo
