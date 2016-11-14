@@ -18,7 +18,7 @@ just-build-prod:
 watch: install just-watch
 
 just-watch:
-	$(NPM_BIN)/dreija --watch --app ./src/index.js --env DBHOST="$(DOCKER_IP)" --env REDISHOST="$(DOCKER_IP)" --secrets ./secrets.json
+	$(NPM_BIN)/dreija --watch --app ./src/index.js --env DBHOST="$(DOCKER_IP)" --env REDISHOST="$(DOCKER_IP)" --secrets ./secrets/secrets.json
 
 image:
 	docker build -t joen/blogmachine:prod .

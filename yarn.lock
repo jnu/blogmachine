@@ -92,7 +92,7 @@ are-we-there-yet@~1.1.2:
     delegates "^1.0.0"
     readable-stream "^2.0.0 || ^1.1.13"
 
-argparse@^1.0.7:
+argparse@^1.0.7, argparse@~1.0.2:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.9.tgz#73d83bc263f86e97f8cc4f6bae1b0e90a7d22c86"
   dependencies:
@@ -1326,6 +1326,10 @@ browserify-zlib@~0.1.4:
   dependencies:
     pako "~0.2.0"
 
+browserkeymap@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/browserkeymap/-/browserkeymap-0.1.0.tgz#aa6dde5341caba581fa25aabbbf69656d6035888"
+
 browserslist@~1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-1.4.0.tgz#9cfdcf5384d9158f5b70da2aa00b30e8ff019049"
@@ -2137,9 +2141,9 @@ download@^4.0.0, download@^4.1.2:
     vinyl-fs "^2.2.0"
     ware "^1.2.0"
 
-dreija@0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/dreija/-/dreija-0.2.5.tgz#14ee3b4ead0cd3141c9ec0bd5700cc7ed3163e0f"
+dreija@0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/dreija/-/dreija-0.2.8.tgz#bfbb5f1fd16b6e1482e6d57f30af318f1b96641f"
   dependencies:
     babel "^6.3.26"
     babel-core "^6.4.5"
@@ -3860,6 +3864,12 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+linkify-it@~1.2.0:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-1.2.4.tgz#0773526c317c8fd13bd534ee1d180ff88abf881a"
+  dependencies:
+    uc.micro "^1.0.1"
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -4116,11 +4126,25 @@ map-stream@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/map-stream/-/map-stream-0.1.0.tgz#e56aa94c4c8055a16404a0674b78f215f7c8e194"
 
+markdown-it@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-4.4.0.tgz#3df373dbea587a9a7fef3e56311b68908f75c414"
+  dependencies:
+    argparse "~1.0.2"
+    entities "~1.1.1"
+    linkify-it "~1.2.0"
+    mdurl "~1.0.0"
+    uc.micro "^1.0.0"
+
 math-expression-evaluator@^1.2.14:
   version "1.2.14"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.14.tgz#39511771ed9602405fba9affff17eb4d2a3843ab"
   dependencies:
     lodash.indexof "^4.0.5"
+
+mdurl@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mdurl/-/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -5013,6 +5037,13 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
+prosemirror@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/prosemirror/-/prosemirror-0.7.0.tgz#230f836f99d67e38e893009584a17d00cf21c656"
+  dependencies:
+    browserkeymap "^0.1.0"
+    markdown-it "^4.4.0"
+
 proxy-addr@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-1.1.2.tgz#b4cc5f22610d9535824c123aef9d3cf73c40ba37"
@@ -5129,6 +5160,10 @@ react:
 react-dom:
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.3.2.tgz#c46b0aa5380d7b838e7a59c4a7beff2ed315531f"
+
+react-prosemirror:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-prosemirror/-/react-prosemirror-0.2.1.tgz#01362f85a0f895e52134b18992b3f113d3704b21"
 
 react-redux, react-redux@^4.2.1:
   version "4.4.5"
@@ -6088,6 +6123,10 @@ typedarray@~0.0.5:
 ua-parser-js@^0.7.9:
   version "0.7.10"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.10.tgz#917559ddcce07cbc09ece7d80495e4c268f4ef9f"
+
+uc.micro@^1.0.0, uc.micro@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.3.tgz#7ed50d5e0f9a9fb0a573379259f2a77458d50192"
 
 uglify-js@^2.7.4, uglify-js@~2.7.3, uglify-js@2.7.x:
   version "2.7.4"
