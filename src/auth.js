@@ -8,7 +8,7 @@ export default {
                 field: 'type',
                 value: 'post'
             },
-            auth: ['admin']
+            auth: true
         }
     ]
 };
