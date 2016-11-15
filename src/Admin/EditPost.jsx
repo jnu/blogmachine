@@ -56,7 +56,7 @@ export class EditPost extends Component {
             'handleContentChange',
             'handleTitleChange',
             'handlePublicChange',
-            'handleScriptsChange',
+            'handleIncludesChange',
             'handleInitScriptChange',
             'handleTypeChange',
             'submit',
@@ -76,7 +76,7 @@ export class EditPost extends Component {
             type: props.post.get('type'),
             content: editorState,
             public: props.post.get('public', false),
-            scripts: props.post.get('scripts', '<!-- enter html includes here -->\n'),
+            includes: props.post.get('includes', '<!-- enter html includes here -->\n'),
             initScript: props.post.get('initScript', '/* enter init script here */\n'),
             submitting: false
         };
@@ -98,8 +98,8 @@ export class EditPost extends Component {
         this.setState({ public: this.refs.public.checked });
     }
 
-    handleScriptsChange() {
-        this.setState({ scripts: this.refs.scripts.value });
+    handleIncludesChange() {
+        this.setState({ includes: this.refs.includes.value });
     }
 
     handleInitScriptChange() {
@@ -118,8 +118,9 @@ export class EditPost extends Component {
                     type: state.type,
                     content: this.refs.editor.getContent('html'),
                     public: state.public,
-                    scripts: state.scripts,
-                    updated: new Date().toISOString()
+                    updated: new Date().toISOString(),
+                    includes: state.includes,
+                    initScript: state.initScript
                 })
                 .then(() => this.setState({ submitting: false }));
         });
@@ -171,11 +172,11 @@ export class EditPost extends Component {
                     <label htmlFor="scripts">Includes (above):</label>
                 </div>
                 <div>
-                    <textarea value={ this.state.scripts }
+                    <textarea value={ this.state.includes }
                               style={{ width: '100%' }}
-                              name="scripts"
-                              ref="scripts"
-                              onChange={ this.handleScriptsChange }
+                              name="includes"
+                              ref="includes"
+                              onChange={ this.handleIncludesChange }
                               />
                 </div>
                 <div>

@@ -42,7 +42,9 @@ export default {
                     author: doc.author || '',
 
                     // Additional fields:
-                    content: doc.content
+                    content: doc.content,
+                    includes: doc.includes,
+                    initScript: doc.initScript
                 });
             }
         }
