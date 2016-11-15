@@ -40,14 +40,56 @@ class Post extends Component {
         );
     }
 
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
     componentDidMount() {
         const { post } = this.props;
         if (BROWSER) {
-            this.injectDeps(post.get('includes'), post.get('initScript'));
+            this.injectIncludes(post.get('includes'), post.get('initScript'));
         }
     }
 
-    injectDeps(includes = '', initScript = '') {
+    componentWillUnmount() {
+        this.removeIncludes();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // Check if path is changing
+        const pathChanged = this.props.location.pathname !== nextProps.location.pathname;
+
+        // Check that these includes are different than the ones that have
+        // already been injected in the page.
+        const injected = this._injected || Immutable.Map();
+        const includes = injected.get('includes', '');
+        const initScript = injected.get('initScript', '');
+
+        const nextPost = nextProps.post;
+
+        const nextInc = nextPost.get('includes');
+        const needsIncUpdate = !!nextInc && includes !== nextInc;
+
+        const nextScr = nextPost.get('initScript');
+        const needsScrUpdate = !!nextScr && initScript !== nextScr;
+
+        // Refresh includes only when content is changing
+        if (BROWSER && (pathChanged || needsIncUpdate || needsScrUpdate)) {
+            this.removeIncludes();
+            this.injectIncludes(nextPost.get('includes'), nextPost.get('initScript'));
+        }
+    }
+
+    /**
+     * Inject "includes" into page. These are auxilliary scripts and styles
+     * to make the posts more lively. This is obviously risky and messy. It
+     * is a step towards fully fixing the legacy posts which had external
+     * scripts and links embedded directly in the body of the post.
+     * @param  {String} includes
+     * @param  {String} initScript
+     */
+    injectIncludes(includes = '', initScript = '') {
         if (!includes && !initScript) {
             return;
         }
@@ -61,8 +103,9 @@ class Post extends Component {
         // Clone parsed tags - they will not be loaded if injected directly
         // into the real DOM from the fragment.
         const injected = Array.prototype.map.call(frag.firstChild.children, (node, i) => {
-            const id = `${idPfx}_i`;
+            const id = `${idPfx}_${i}`;
             let el;
+
             switch (node.nodeName) {
                 case 'SCRIPT':
                     el = document.createElement('script');
@@ -71,14 +114,14 @@ class Post extends Component {
                 case 'LINK':
                     el = document.createElement('link');
                     el.href = node.href;
-                    el.ref = node.ref;
+                    el.rel = node.rel;
                     break;
                 default:
                     throw new Error(`Can't include node of type ${node.nodeName}`);
             }
 
             // Copy common attributes.
-            el.id = node.id;
+            el.id = id;
             el.type = node.type;
 
             // Connect to load promise.
@@ -121,20 +164,33 @@ class Post extends Component {
             });
 
         // Track the names of things injected.
-        this.setState({
+        this._injected = Immutable.fromJS({
             injectedElements: injected.map(({ id }) => id).concat(initScriptId),
-            injectedInitFunctionName: initScriptId
+            injectedInitFunctionName: initScriptId,
+            includes,
+            initScript
         });
     }
 
-    componentWillUnmount() {
-        const {
-            injectedElements,
-            injectedInitFunctionName
-        } = this.state;
+    /**
+     * Remove injected content (scripts and styles). This should be called
+     * when the component will update with new content, or is being unmounted.
+     *
+     * TODO This doesn't attempt to clean up any modifications made by the
+     * injected script itself. Could try harder to sandbox injected content
+     * to make this possible, or informally add some events that notify the
+     * script that it needs to clean up.
+     */
+    removeIncludes() {
+        const injected = this._injected || Immutable.Map();
+
+        const injectedElements = injected.get('injectedElements', Immutable.List()).toArray();
+        const injectedInitFunctionName = injected.get('injectedInitFunctionName')
+        const includes = injected.get('includes', '');
+        const initScript = injected.get('initScript', '');
 
         // Remove any injected elements
-        if (injectedElements && injectedElements.length) {
+        if (injectedElements.length) {
             injectedElements.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
