@@ -59,6 +59,8 @@ export class EditPost extends Component {
             'handleIncludesChange',
             'handleInitScriptChange',
             'handleTypeChange',
+            'handleCategoryChange',
+            'handleSnippetChange',
             'submit',
         );
     }
@@ -75,6 +77,8 @@ export class EditPost extends Component {
             title: props.post.get('title'),
             type: props.post.get('type'),
             content: editorState,
+            snippet: props.post.get('snippet'),
+            category: props.post.get('category'),
             public: props.post.get('public', false),
             includes: props.post.get('includes', '<!-- enter html includes here -->\n'),
             initScript: props.post.get('initScript', '/* enter init script here */\n'),
@@ -110,13 +114,23 @@ export class EditPost extends Component {
         this.setState({ type: this.refs.type.value });
     }
 
+    handleCategoryChange() {
+        this.setState({ category: this.refs.category.value });
+    }
+
+    handleSnippetChange() {
+        this.setState({ snippet: this.refs.snippet.value });
+    }
+
     submit() {
         this.setState({ submitting: true }, () => {
             const { state } = this;
             this.sendData({
                     title: state.title,
                     type: state.type,
+                    category: state.category,
                     content: this.refs.editor.getContent('html'),
+                    snippet: state.snippet,
                     public: state.public,
                     updated: new Date().toISOString(),
                     includes: state.includes,
@@ -132,6 +146,12 @@ export class EditPost extends Component {
             <div className="EditPost">
                 <div>
                     <Link to="/admin">Admin Index</Link>
+                </div>
+                <div>
+                    <button type="button"
+                            onClick={ this.submit }>
+                        Post
+                    </button>
                 </div>
                 <h1>
                     <input type="text"
@@ -152,6 +172,15 @@ export class EditPost extends Component {
                            />
                 </div>
                 <div>
+                    <label htmlFor="category">Category:</label>
+                    <input type="text"
+                           name="category"
+                           value={ this.state.category }
+                           ref="category"
+                           onChange={ this.handleCategoryChange }
+                           />
+                </div>
+                <div>
                     <label htmlFor="public">Public:</label>
                     <input type="checkbox"
                            name="public"
@@ -160,13 +189,24 @@ export class EditPost extends Component {
                            onChange={ this.handlePublicChange }
                            />
                 </div>
+                <div>Created: { post.get('created') }</div>
                 <div>
-                    <h3>Content:</h3>
                     <ProseMirror value={ this.state.content }
                                  onChange={ this.handleContentChange }
                                  options={ PROSE_MIRROR_OPTS }
                                  ref="editor">
                     </ProseMirror>
+                </div>
+                <div>
+                    <label htmlFor="snippet">Snippet:</label>
+                </div>
+                <div>
+                    <textarea value={ this.state.snippet }
+                              style={{ width: '100%', height: 70 }}
+                              name="snippet"
+                              ref="snippet"
+                              onChange={ this.handleSnippetChange }
+                              />
                 </div>
                 <div>
                     <label htmlFor="scripts">Includes (above):</label>
@@ -190,13 +230,7 @@ export class EditPost extends Component {
                               onChange={ this.handleInitScriptChange }
                               />
                 </div>
-                <div>
-                    <button type="button"
-                            onClick={ this.submit }>
-                        Post
-                    </button>
-                </div>
-                <div>
+                <div style={{ marginTop: 100 }}>
                     <h3>Original post</h3>
                     { this.props.post.get('content', '[[no content]]') }
                 </div>

@@ -109,7 +109,10 @@ class Post extends Component {
             switch (node.nodeName) {
                 case 'SCRIPT':
                     el = document.createElement('script');
-                    el.src = node.src;
+                    if (node.src) {
+                        el.src = node.src;
+                    }
+                    el.textContent = node.textContent;
                     break;
                 case 'LINK':
                     el = document.createElement('link');
@@ -122,7 +125,9 @@ class Post extends Component {
 
             // Copy common attributes.
             el.id = id;
-            el.type = node.type;
+            if (node.type) {
+                el.type = node.type;
+            }
 
             // Connect to load promise.
             const def = new Deferred();

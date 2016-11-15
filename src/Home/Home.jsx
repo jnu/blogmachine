@@ -3,6 +3,9 @@ import { withData } from 'dreija';
 import { ensureResourceList } from 'dreija/actions';
 import { Link } from 'react-router';
 import Immutable from 'immutable';
+import {
+    isFetching
+} from 'dreija/helpers';
 
 // const ITEM_HEIGHT = 30;
 
@@ -16,7 +19,7 @@ import Immutable from 'immutable';
             title: val.getIn(['@@resources', 'title'])
         })).toArray();
         return {
-            isFetchingIndex: false, //state.root.get('isFetchingIndex'),
+            isFetchingIndex: isFetching(state),
             posts
         };
     }
