@@ -14,7 +14,18 @@
 sudo docker pull redis:alpine
 sudo docker run --name redis -d redis:alpine redis-server --appendonly yes
 
+sudo docker pull joen/jnuworks:static
 sudo docker pull joen/blogmachine:prod
+
+# Run static server
+sudo docker kill static
+sudo docker rm static
+sudo docker run -d \
+                -p 5000:80 \
+                --name static \
+                joen/jnuworks:static \
+                nginx -g "daemon off;"
+
 
 # Run NodeJS server (prerendering + API)
 sudo docker kill blog
@@ -36,6 +47,7 @@ sudo docker run -d \
                 -p 443:443 \
                 --link db:db \
                 --link blog:blog \
+                --link static:static \
                 --name nginx \
                 -v /home/ubuntu/secrets:/etc/secrets \
                 joen/blogmachine:prod \
