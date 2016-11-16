@@ -20,17 +20,11 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 
-
-# Nginx config
+# Set up nginx
 RUN apt-get install -y nginx
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 RUN rm -rf /etc/nginx/sites-enabled/default
-# Configure nginx
-COPY nginx/blogmachine.conf /etc/nginx/sites-enabled/blogmachine
-EXPOSE 80 443
-# CMD ["nginx", "-g", "daemon off;"]
-
 
 
 # Set up yarn
@@ -65,6 +59,11 @@ RUN ln -s /tmp/npm-cache/package.json .
 COPY Makefile Makefile
 RUN make just-build-prod
 
+
+# Configure server
+COPY nginx/blogmachine.conf /etc/nginx/sites-enabled/blogmachine
+EXPOSE 80 443
+# CMD ["nginx", "-g", "daemon off;"]
 
 
 # Default Command
