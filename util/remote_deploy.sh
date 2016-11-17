@@ -14,14 +14,26 @@
 sudo docker pull redis:alpine
 sudo docker run --name redis -d redis:alpine redis-server --appendonly yes
 
+# Get custom images
+sudo docker pull joen/jnuworks:php
 sudo docker pull joen/jnuworks:static
 sudo docker pull joen/blogmachine:prod
+
+# Run php (with mysql and its own nginx)
+sudo docker kill php
+sudo docker rm php
+sudo docker run -d \
+                -p 5001:80 \
+                --name php \
+                joen/jnuworks:php \
+                -v /data/var/lib/mysql
 
 # Run static server
 sudo docker kill static
 sudo docker rm static
 sudo docker run -d \
                 -p 5000:80 \
+                --link php:php \
                 --name static \
                 joen/jnuworks:static \
                 nginx -g "daemon off;"
@@ -48,6 +60,7 @@ sudo docker run -d \
                 --link db:db \
                 --link blog:blog \
                 --link static:static \
+                --link php:php \
                 --name nginx \
                 -v /home/ubuntu/secrets:/etc/secrets \
                 joen/blogmachine:prod \
