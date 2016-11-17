@@ -27,7 +27,7 @@ image:
 
 php-image:
 	git submodule update --init --recursive
-	make image -C ./static/php
+	make image -C ./static/linked/php
 
 static-image:
 	git submodule update --init --recursive
