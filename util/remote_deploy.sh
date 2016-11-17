@@ -24,9 +24,9 @@ sudo docker kill php
 sudo docker rm php
 sudo docker run -d \
                 -p 5001:80 \
+                -v /data/var/lib/mysql:/var/lib/mysql \
                 --name php \
-                joen/jnuworks:php \
-                -v /data/var/lib/mysql
+                joen/jnuworks:php
 
 # Run static server
 sudo docker kill static
