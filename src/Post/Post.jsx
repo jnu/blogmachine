@@ -3,26 +3,14 @@ import { withData } from 'dreija';
 import { ensureResource } from 'dreija/actions';
 import Immutable from 'immutable';
 import { BROWSER } from 'dreija/env';
-
-const noop = () => {};
-
-
-class Deferred {
-
-    constructor() {
-        this.promise = new Promise((resolve, reject) => {
-            this.resolve = resolve;
-            this.reject = reject;
-        });
-    }
-
-}
+import { normalizeUrlSlug } from '../util/slug';
+import { Deferred } from '../util/Deferred';
 
 
 @withData({
-    fetch: (dispatch, { id }) => dispatch(ensureResource('posts', id)),
+    fetch: (dispatch, { id }) => dispatch(ensureResource('posts', normalizeUrlSlug(id))),
     derive: (state, props) => {
-        const { id } = props.params;
+        const id = normalizeUrlSlug(props.params.id);
         const post = state.resource.getIn(
             ['posts', '@@resources', id, '@@resources'],
             Immutable.Map()

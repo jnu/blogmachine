@@ -6,6 +6,8 @@ import Immutable from 'immutable';
 import {
     isFetching
 } from 'dreija/helpers';
+import { lightGray } from '../common/Palette';
+import { humanSlugForResource } from '../util/slug';
 
 
 
@@ -21,6 +23,7 @@ import {
                 _id: key,
                 title: val.getIn(['@@resources', 'title']),
                 snippet: val.getIn(['@@resources', 'snippet']),
+                created: val.getIn(['@@resources', 'created']),
                 tags: (val.getIn(['@@resources', 'category']) || '').split(/[\|\>\,]/).map(tag => tag.trim())
             }))
             .toArray();
@@ -37,13 +40,21 @@ import {
 class Home extends Component {
 
     _renderPostItem(post) {
-        const {  _id, title, snippet, tags } = post;
+        const {  _id, title, snippet, tags, created } = post;
         return (
             <div key={ _id } className="Home-index-item">
                 <div>
-                    <Link to={ `/post/${_id}` }>
+                    <Link to={ `/post/${humanSlugForResource(_id, title)}` }>
                         <span dangerouslySetInnerHTML={{ __html: title }}></span>
                     </Link>
+                    <span style={{
+                        float: 'right',
+                        fontSize: '0.75rem',
+                        paddingTop: '0.375rem',
+                        color: lightGray
+                    }}>
+                        { new Date(created).toISOString().substr(0, 10) }
+                    </span>
                 </div>
                 <div style={{
                         paddingLeft: '1rem',
@@ -85,7 +96,7 @@ class Home extends Component {
                     <h1>Projects{ categoryId ? `: ${categoryId}` : ''}</h1>
                 </header>
                 <div className="Home-index-container" ref="container">
-                    { posts.map(this._renderPostItem) }
+                    { posts.sort((a, b) => a.created < b.created ? 1 : -1).map(this._renderPostItem) }
                 </div>
                 { this._renderDebug() }
             </div>
