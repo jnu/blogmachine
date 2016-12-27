@@ -33,29 +33,19 @@ if (!BROWSER) {
 
     class Widget extends schema.Inline {
         get attrs() {
-            return {
-                id: new schema.Attribute()
-            };
+            return {};
         }
         get draggable() {
             return true;
         }
         serializeDOM(node, s) {
-            return s.elt('div', {
-                id: node.attrs.id,
-                class: 'PM-Widget',
-                style: 'width: 100%; min-height: 40px'
-            });
+            return s.elt('jn-widget', {});
         }
     }
 
-    Widget.register('parseDOM', 'div', {
+    Widget.register('parseDOM', 'jn-widget', {
         parse(dom, state) {
-            state.insert(this, {
-                id: dom.getAttribute('id'),
-                style: dom.getAttribute('style'),
-                class: dom.getAttribute('className')
-            });
+            state.insert(this, {});
         }
     })
 
@@ -72,7 +62,6 @@ if (!BROWSER) {
     Widget.register('command', 'insert', {
         derive: {
             params: [
-                { label: 'Widget ID', attr: 'id' }
             ]
         },
         label: 'Insert widget',
@@ -116,6 +105,7 @@ export class EditPost extends Component {
             'handlePublicChange',
             'handleIncludesChange',
             'handleInitScriptChange',
+            'handleWidgetTemplateChange',
             'handleTypeChange',
             'handleCategoryChange',
             'handleSpecialIdChange',
@@ -143,6 +133,7 @@ export class EditPost extends Component {
             public: props.post.get('public', false),
             includes: props.post.get('includes', '<!-- enter html includes here -->\n'),
             initScript: props.post.get('initScript', '/* enter init script here */\n'),
+            widgetTemplate: props.post.get('widgetTemplate', '<!-- enter widget template here -->\n'),
             submitting: false,
             origViewRendered: false
         };
@@ -170,6 +161,10 @@ export class EditPost extends Component {
 
     handleInitScriptChange() {
         this.setState({ initScript: this.refs.initScript.value });
+    }
+
+    handleWidgetTemplateChange() {
+        this.setState({ widgetTemplate: this.refs.widgetTemplate.value });
     }
 
     handleTypeChange() {
@@ -205,6 +200,7 @@ export class EditPost extends Component {
                     updated: new Date().toISOString(),
                     includes: state.includes,
                     initScript: state.initScript,
+                    widgetTemplate: state.widgetTemplate,
                     specialId: state.specialId
                 })
                 .then(() => this.setState({ submitting: false }));
@@ -319,6 +315,17 @@ export class EditPost extends Component {
                               name="initScript"
                               ref="initScript"
                               onChange={ this.handleInitScriptChange }
+                              />
+                </div>
+                <div>
+                    <label htmlFor="widgetTemplate">Widget Template (within):</label>
+                </div>
+                <div>
+                    <textarea value={ this.state.widgetTemplate }
+                              style={{ width: '100%' }}
+                              name="widgetTemplate"
+                              ref="widgetTemplate"
+                              onChange={ this.handleWidgetTemplateChange }
                               />
                 </div>
                 <div style={{ marginTop: 100 }}>

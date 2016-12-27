@@ -213,13 +213,16 @@ class Post extends Component {
     render() {
         const { post } = this.props;
 
+        const content = (post.get('content') || '')
+            .replace(/<jn\-widget>\s*<\/jn\-widget>/, post.get('widgetTemplate'));
+
         return (
             <article className="Post">
                 <header>
                     <h2><span dangerouslySetInnerHTML={{ __html: post.get('title') }}></span></h2>
                 </header>
                 <section className="Post-content">
-                    <div dangerouslySetInnerHTML={{ __html: post.get('content') }}></div>
+                    <div dangerouslySetInnerHTML={{ __html: content }}></div>
                 </section>
 
                 { this._renderDebug() }

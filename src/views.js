@@ -52,6 +52,7 @@ export default {
                 content: doc.content,
                 includes: doc.includes,
                 initScript: doc.initScript,
+                widgetTemplate: doc.widgetTemplate,
                 specialId: doc.specialId || ''
             });
 
@@ -117,6 +118,7 @@ export default {
                     content: doc.content,
                     includes: doc.includes,
                     initScript: doc.initScript,
+                    widgetTemplate: doc.widgetTemplate,
                     specialId: doc.specialId || ''
                 });
             }
