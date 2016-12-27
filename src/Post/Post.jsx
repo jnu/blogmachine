@@ -216,7 +216,7 @@ class Post extends Component {
         return (
             <article className="Post">
                 <header>
-                    <h2>{ post.get('title') }</h2>
+                    <h2><span dangerouslySetInnerHTML={{ __html: post.get('title') }}></span></h2>
                 </header>
                 <section className="Post-content">
                     <div dangerouslySetInnerHTML={{ __html: post.get('content') }}></div>

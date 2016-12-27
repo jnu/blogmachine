@@ -26,8 +26,8 @@ class App extends Component {
                         <Link to="/" className="Link">JNU</Link>
                     </address>
                     <nav className="App-header-nav">
-                        <Link to="/post/about" className="Link">about</Link>
-                        <Link to="/post/contact" className="Link">contact</Link>
+                        <Link to="/page/about" className="Link">about</Link>
+                        <Link to="/page/contact" className="Link">contact</Link>
                     </nav>
                 </header>
                 <aside className="App-sidebar">

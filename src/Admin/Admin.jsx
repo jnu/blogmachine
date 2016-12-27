@@ -9,9 +9,9 @@ import { getResource } from 'dreija/helpers';
 
 
 @withData({
-    fetch: dispatch => dispatch(ensureResourceList('posts', 'adminIndex')),
+    fetch: dispatch => dispatch(ensureResourceList('admin', 'index')),
     derive: state => {
-        const allPosts = getResource(state, 'posts');
+        const allPosts = getResource(state, 'admin');
         const posts = allPosts.entrySeq().toList().map(([key, val]) => ({
             id: key,
             title: val.getIn(['@@resources', 'title']),

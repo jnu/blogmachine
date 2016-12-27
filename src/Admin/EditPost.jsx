@@ -40,14 +40,14 @@ const PROSE_MIRROR_OPTS = {
 
 
 @withData({
-    fetch: (dispatch, { id }) => dispatch(ensureResource('posts', id)),
+    fetch: (dispatch, { id }) => dispatch(ensureResource('admin', id)),
     derive: (state, props) => ({
-        post: getResource(state, 'posts', props.params.id) || Immutable.Map(),
+        post: getResource(state, 'admin', props.params.id) || Immutable.Map(),
         id: props.params.id
     }),
     send: (dispatch, { id, post }, data) => {
-        return dispatch(sendResource('posts', { ...post.toJS(), ...data }))
-            .then(() => dispatch(ensureResource('posts', id)));
+        return dispatch(sendResource('admin', { ...post.toJS(), ...data }))
+            .then(() => dispatch(ensureResource('admin', id)));
     }
 })
 export class EditPost extends Component {

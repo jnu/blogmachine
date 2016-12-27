@@ -10,16 +10,25 @@ import {
 
 
 @withData({
-    fetch: dispatch => dispatch(ensureResourceList('posts', 'index')),
-    derive: state => {
+    fetch: (dispatch, { id }) => dispatch(ensureResourceList('posts', id || 'index')),
+    derive: (state, props) => {
+        const categoryId = props.params.id;
         const allPosts = state.resource.getIn(['posts', '@@resources'], Immutable.Map());
-        const posts = allPosts.entrySeq().toList().map(([key, val]) => ({
-            _id: key,
-            title: val.getIn(['@@resources', 'title']),
-            snippet: val.getIn(['@@resources', 'snippet']),
-            category: val.getIn(['@@resources', 'category']) || ''
-        })).toArray();
+        const unfilteredPosts = allPosts
+            .entrySeq()
+            .toList()
+            .map(([key, val]) => ({
+                _id: key,
+                title: val.getIn(['@@resources', 'title']),
+                snippet: val.getIn(['@@resources', 'snippet']),
+                tags: (val.getIn(['@@resources', 'category']) || '').split(/[\|\>\,]/).map(tag => tag.trim())
+            }))
+            .toArray();
+        const posts = !categoryId ?
+            unfilteredPosts.slice() :
+            unfilteredPosts.filter(post => post.tags.indexOf(categoryId) >= 0)
         return {
+            category: categoryId,
             isFetchingIndex: isFetching(state),
             posts
         };
@@ -28,8 +37,7 @@ import {
 class Home extends Component {
 
     _renderPostItem(post) {
-        const {  _id, title, snippet, category } = post;
-        const tags = category.split(/[\|\>]/);
+        const {  _id, title, snippet, tags } = post;
         return (
             <div key={ _id } className="Home-index-item">
                 <div>
@@ -45,7 +53,9 @@ class Home extends Component {
                     }}>
                     <span dangerouslySetInnerHTML={{ __html: snippet }}></span>
                     <span style={{ float: 'right' }}>
-                        {tags.map(tag => <span key={tag} className="Tag">{tag.trim()}</span>)}
+                        {tags.map(tag => (
+                            <Link className="Tag" to={`/category/${tag}`} key={tag}>{tag}</Link>
+                        ))}
                     </span>
                 </div>
             </div>
@@ -67,10 +77,12 @@ class Home extends Component {
             return (<div>Wait!</div>);
         }
 
+        const categoryId = this.props.category || '';
+
         return (
             <div>
                 <header>
-                    <h1>Work</h1>
+                    <h1>Projects{ categoryId ? `: ${categoryId}` : ''}</h1>
                 </header>
                 <div className="Home-index-container" ref="container">
                     { posts.map(this._renderPostItem) }
