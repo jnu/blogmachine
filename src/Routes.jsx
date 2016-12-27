@@ -13,6 +13,7 @@ export default ({ withAuth }) => (
         <Route path="post/:id" component={ Post } />
         <Route path="login" component={ Login } />
         <Route path="admin" component={ Admin } onEnter={ withAuth() } />
+        <Route path="edit" component={ EditPost } onEnter={ withAuth() } />
         <Route path="edit/:id" component={ EditPost } onEnter={ withAuth() } />
     </Route>
 );

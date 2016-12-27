@@ -3,6 +3,30 @@ Blog
 
 Most of the magic happens in Dreija.
 
+# Development
+
+Requires `couchdb` and `redis` to be running. You can use the standard images
+for these things (configure replication in CouchDB if desired).
+
+```
+$ docker run -d -p 5984:5984 -v /data/var/lib/couchdb:/usr/local/var/lib/couchdb --name db klaemo/couchdb:1.6.1
+$ docker run --name redis -d -p 6379:6379 redis:alpine redis-server --appendonly yes
+```
+
+Requires using Node v4. Later versions **will not work** right now.
+
+```
+$ nvm use 4
+```
+
+Finally, run the watcher (installs dependencies as necessary):
+
+```
+$ make watch
+```
+
+Then live-reload development is available on `localhost:3030`.
+
 # Deployment
 
 Build the docker images (db, blog, and nginx). Couchdb does not require any

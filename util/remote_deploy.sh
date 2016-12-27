@@ -1,16 +1,26 @@
 #!/bin/bash
 
-# Assumes couchdb is already running. If not, run
-# sudo docker run -d -p 5984:5984 -v /data/var/lib/couchdb:/usr/local/var/lib/couchdb --name db klaemo/couchdb
+# CouchDB and Redis are run with standard prefab images with persistent data
+# volumes.
 #
-# If database needs to be restored, figure out how to do that :D
+# The NodeJS and NginX portions are run in two different containers from a
+# single image. This ensures fingerprinted bundles referenced by the static
+# markup will be found by nginx when it serves the assets.
 #
-# CouchDB is run in a standard couch container with a data volume. The NodeJS
-# and NginX portions are run in two different containers from a single image.
-# This ensures fingerprinted bundles referenced by the static markup will be
-# found by nginx when it serves the assets.
+# Additional static & php repos are run in their own containers which are
+# linked to the main NginX reverse proxy.
+#
+# Multinode: everything currently runs on a single node. Nothing actually needs
+# to be colocated, and Redis & the static assets could add more nodes and get
+# immediate benefits with load balancing. CouchDB must be upgraded to v2 to be
+# set up as a cluster.
 
-# Run redis w/ persistent storage
+# Run CouchDB. TODO upgrade to CouchDB 2. (May already be up.)
+# If database needs to be restored, configure the replicator from the UI.
+sudo docker pull klaemo/couchdb:1.6.1
+sudo docker run -d -p 5984:5984 -v /data/var/lib/couchdb:/usr/local/var/lib/couchdb --name db klaemo/couchdb:1.6.1
+
+# Run redis w/ persistent storage. (May already be up.)
 sudo docker pull redis:alpine
 sudo docker run --name redis -d redis:alpine redis-server --appendonly yes
 

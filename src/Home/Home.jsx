@@ -7,7 +7,6 @@ import {
     isFetching
 } from 'dreija/helpers';
 
-// const ITEM_HEIGHT = 30;
 
 
 @withData({
@@ -16,7 +15,9 @@ import {
         const allPosts = state.resource.getIn(['posts', '@@resources'], Immutable.Map());
         const posts = allPosts.entrySeq().toList().map(([key, val]) => ({
             _id: key,
-            title: val.getIn(['@@resources', 'title'])
+            title: val.getIn(['@@resources', 'title']),
+            snippet: val.getIn(['@@resources', 'snippet']),
+            category: val.getIn(['@@resources', 'category']) || ''
         })).toArray();
         return {
             isFetchingIndex: isFetching(state),
@@ -27,10 +28,26 @@ import {
 class Home extends Component {
 
     _renderPostItem(post) {
-        const {  _id, title } = post;
+        const {  _id, title, snippet, category } = post;
+        const tags = category.split(/[\|\>]/);
         return (
             <div key={ _id } className="Home-index-item">
-                <Link to={ `/post/${_id}` }>{ title }</Link>
+                <div>
+                    <Link to={ `/post/${_id}` }>
+                        <span dangerouslySetInnerHTML={{ __html: title }}></span>
+                    </Link>
+                </div>
+                <div style={{
+                        paddingLeft: '1rem',
+                        paddingRight: '1rem',
+                        fontSize: '0.75rem',
+                        marginBottom: '2rem'
+                    }}>
+                    <span dangerouslySetInnerHTML={{ __html: snippet }}></span>
+                    <span style={{ float: 'right' }}>
+                        {tags.map(tag => <span key={tag} className="Tag">{tag.trim()}</span>)}
+                    </span>
+                </div>
             </div>
         );
     }
@@ -53,7 +70,7 @@ class Home extends Component {
         return (
             <div>
                 <header>
-                    <h1>Peruse</h1>
+                    <h1>Work</h1>
                 </header>
                 <div className="Home-index-container" ref="container">
                     { posts.map(this._renderPostItem) }

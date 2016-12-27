@@ -7,7 +7,8 @@ export default {
                     title: doc.title || 'Untitled',
                     type: doc.type,
                     category: doc.category || '',
-                    created: doc.created || new Date(0),
+                    created: doc.created || new Date(),
+                    updated: doc.updated || doc.created || new Date(),
                     _id: doc._id,
                     _rev: doc._rev,
                     snippet: doc.snippet || '',
@@ -16,13 +17,14 @@ export default {
                 });
 
                 // Fetch document index from view.
-                if (doc.public) {
+                if (doc.public && !doc.specialId) {
                     emit('index', {
                         // General `index` content:
                         title: doc.title || 'Untitled',
                         type: doc.type,
                         category: doc.category || '',
-                        created: doc.created || new Date(0),
+                        created: doc.created || new Date(),
+                        updated: doc.updated || doc.created || new Date(),
                         _id: doc._id,
                         _rev: doc._rev,
                         snippet: doc.snippet || '',
@@ -37,7 +39,8 @@ export default {
                     title: doc.title || 'Untitled',
                     type: doc.type,
                     category: doc.category || '',
-                    created: doc.created || new Date(0),
+                    created: doc.created || new Date(),
+                    updated: doc.updated || doc.created || new Date(),
                     _id: doc._id,
                     _rev: doc._rev,
                     snippet: doc.snippet || '',
@@ -47,8 +50,22 @@ export default {
                     // Additional fields:
                     content: doc.content,
                     includes: doc.includes,
-                    initScript: doc.initScript
+                    initScript: doc.initScript,
+                    specialId: doc.specialId || ''
                 });
+
+                if (doc.specialId) {
+                    emit(doc.specialId, {
+                        title: doc.title || '',
+                        created: doc.created || new Date(),
+                        updated: doc.updated || doc.created || new Date(),
+                        _id: doc._id,
+                        _rev: doc._rev,
+                        content: doc.content,
+                        specialId: doc.specialId || '',
+                        public: true
+                    });
+                }
             }
         }
     }

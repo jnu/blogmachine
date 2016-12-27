@@ -1,6 +1,7 @@
 import Routes from './Routes';
 import views from './views';
 import auth from './auth';
+import './Buttons.less';
 
 
 export default (dreija, env) => {

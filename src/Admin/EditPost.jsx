@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Immutable from 'immutable';
 import { Link } from 'react-router';
 import { bindAll } from 'lodash';
 import { withData } from 'dreija';
@@ -10,6 +11,7 @@ import {
     getResource
 } from 'dreija/helpers';
 import { BROWSER } from 'dreija/src/shared/env';
+import { realLightGray } from '../common/Palette';
 
 
 // TODO find an actual isomorphic text editor. All tried use some form of DOM
@@ -40,7 +42,7 @@ const PROSE_MIRROR_OPTS = {
 @withData({
     fetch: (dispatch, { id }) => dispatch(ensureResource('posts', id)),
     derive: (state, props) => ({
-        post: getResource(state, 'posts', props.params.id),
+        post: getResource(state, 'posts', props.params.id) || Immutable.Map(),
         id: props.params.id
     }),
     send: (dispatch, { id, post }, data) => {
@@ -60,7 +62,9 @@ export class EditPost extends Component {
             'handleInitScriptChange',
             'handleTypeChange',
             'handleCategoryChange',
+            'handleSpecialIdChange',
             'handleSnippetChange',
+            'handleOrigViewRenderedChange',
             'submit',
         );
     }
@@ -79,10 +83,12 @@ export class EditPost extends Component {
             content: editorState,
             snippet: props.post.get('snippet'),
             category: props.post.get('category'),
+            specialId: props.post.get('specialId'),
             public: props.post.get('public', false),
             includes: props.post.get('includes', '<!-- enter html includes here -->\n'),
             initScript: props.post.get('initScript', '/* enter init script here */\n'),
-            submitting: false
+            submitting: false,
+            origViewRendered: false
         };
     }
 
@@ -118,8 +124,16 @@ export class EditPost extends Component {
         this.setState({ category: this.refs.category.value });
     }
 
+    handleSpecialIdChange() {
+        this.setState({ specialId: this.refs.specialId.value });
+    }
+
     handleSnippetChange() {
         this.setState({ snippet: this.refs.snippet.value });
+    }
+
+    handleOrigViewRenderedChange() {
+        this.setState({ origViewRendered: this.refs.origViewRendered.checked });
     }
 
     submit() {
@@ -134,7 +148,8 @@ export class EditPost extends Component {
                     public: state.public,
                     updated: new Date().toISOString(),
                     includes: state.includes,
-                    initScript: state.initScript
+                    initScript: state.initScript,
+                    specialId: state.specialId
                 })
                 .then(() => this.setState({ submitting: false }));
         });
@@ -144,15 +159,26 @@ export class EditPost extends Component {
         const { post } = this.props;
         return (
             <div className="EditPost">
-                <div>
-                    <Link to="/admin">Admin Index</Link>
-                </div>
-                <div>
-                    <button type="button"
-                            onClick={ this.submit }>
-                        Post
-                    </button>
-                </div>
+                <nav style={{
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    zIndex: 1000,
+                    padding: '1rem'
+                }}>
+                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                        <li>
+                            <Link to="/admin">Admin Index</Link>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    className="CircleButton CircleButton-Big ButtonGreen"
+                                    onClick={ this.submit }>
+                                <span className="CircleButton-Text">{String.fromCharCode(0x2713)}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
                 <h1>
                     <input type="text"
                            style={{ fontSize: 'inherit', border: 0, width: '100%' }}
@@ -178,6 +204,15 @@ export class EditPost extends Component {
                            value={ this.state.category }
                            ref="category"
                            onChange={ this.handleCategoryChange }
+                           />
+                </div>
+                <div>
+                    <label htmlFor="specialId">Custom ID:</label>
+                    <input type="text"
+                           name="specialId"
+                           value={ this.state.specialId }
+                           ref="specialId"
+                           onChange={ this.handleSpecialIdChange }
                            />
                 </div>
                 <div>
@@ -231,8 +266,25 @@ export class EditPost extends Component {
                               />
                 </div>
                 <div style={{ marginTop: 100 }}>
-                    <h3>Original post</h3>
-                    { this.props.post.get('content', '[[no content]]') }
+                    <div style={{ paddingTop: '2rem', borderTop: `thin solid ${realLightGray}` }}>
+                        <div style={{ float: 'right' }}>
+                            <input type="checkbox"
+                                   ref="origViewRendered"
+                                   onChange={ this.handleOrigViewRenderedChange }
+                                   name="origViewRendered"
+                                   checked={ this.state.origViewRendered }
+                                   />
+                            <label htmlFor="origViewRendered">Rendered</label>
+                        </div>
+                        <h3>Original post</h3>
+                    </div>
+                    {
+                        this.state.origViewRendered ?
+                            <div dangerouslySetInnerHTML={{ __html: this.props.post.get('content', '[[no content]]') }}></div> :
+                            <div><code><pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.75rem' }}>{
+                                this.props.post.get('content', '[[no content]]')
+                            }</pre></code></div>
+                    }
                 </div>
             </div>
         );

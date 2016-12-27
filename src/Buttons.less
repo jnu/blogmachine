@@ -1,0 +1,52 @@
+@import "common/Palette";
+
+
+.CircleButton {
+    border-style: solid;
+    border-radius: 5rem;
+    font-weight: 900;
+    cursor: pointer;
+    outline: none;
+    text-align: center;
+    display: inline-block;
+    color: @off-white;
+    box-shadow: 0px 0px 2px 0px @gray;
+
+    &:hover {
+        color: @off-white;
+    }
+
+    &.CircleButton[disabled], &.Button-Disabled {
+        cursor: default;
+        border-color: @gray;
+        background-color: @light-gray;
+    }
+
+    &.CircleButton-Big {
+        border-width: 4px;
+        line-height: 3rem;
+        font-size: 1rem;
+        width: 3rem;
+        height: 3rem;
+        &:hover {
+            border-width: 5px;
+        }
+
+        .CircleButton-Text {
+            line-height: 3rem;
+            position: relative;
+            top: -3px;
+            left: 1px;
+        }
+    }
+
+    &.ButtonRed {
+        background-color: @red;
+        border-color: @orange;
+    }
+
+    &.ButtonGreen {
+        background-color: @light-green;
+        border-color: @green;
+    }
+}

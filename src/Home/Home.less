@@ -1,3 +1,13 @@
-// .Home-index-item {
-//     height: 30px;
-// }
+@import '../common/Palette';
+
+.Tag {
+    color: @orange;
+    &:before {
+        content: '#';
+        position: relative;
+        left: -2px;
+    }
+    & + .Tag {
+        margin-left: 1rem;
+    }
+}
