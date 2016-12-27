@@ -77,7 +77,7 @@ export default {
             if (doc.type === 'post') {
                 // Fetch document index from view.
                 if (doc.public && !doc.specialId) {
-                    emit('index', {
+                    var indexDoc = {
                         // General `index` content:
                         title: doc.title || 'Untitled',
                         type: doc.type,
@@ -89,23 +89,13 @@ export default {
                         snippet: doc.snippet || '',
                         author: doc.author || '',
                         public: doc.public || false
-                    });
+                    };
+
+                    emit('index', indexDoc);
 
                     // Emit by category
                     (doc.category || 'uncategorized').split(/[\>\|\,]/).forEach(function(tag) {
-                        emit(tag, {
-                            // General `index` content. Same as pure index.
-                            title: doc.title || 'Untitled',
-                            type: doc.type,
-                            category: doc.category || '',
-                            created: doc.created || new Date(),
-                            updated: doc.updated || doc.created || new Date(),
-                            _id: doc._id,
-                            _rev: doc._rev,
-                            snippet: doc.snippet || '',
-                            author: doc.author || '',
-                            public: doc.public || false
-                        });
+                        emit(tag, indexDoc);
                     });
                 }
 

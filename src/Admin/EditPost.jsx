@@ -12,6 +12,7 @@ import {
 } from 'dreija/helpers';
 import { BROWSER } from 'dreija/src/shared/env';
 import { realLightGray } from '../common/Palette';
+import './EditPost.less';
 
 
 // TODO find an actual isomorphic text editor. All tried use some form of DOM
@@ -27,6 +28,60 @@ if (!BROWSER) {
     require('prosemirror/dist/menu/tooltipmenu');
     require('prosemirror/dist/menu/menu');
     require('prosemirror/dist/markdown');
+    var defaultSchema = require('prosemirror/dist/model/defaultschema').defaultSchema;
+    var schema = require('prosemirror/dist/model/schema');
+
+    class Widget extends schema.Inline {
+        get attrs() {
+            return {
+                id: new schema.Attribute()
+            };
+        }
+        get draggable() {
+            return true;
+        }
+        serializeDOM(node, s) {
+            return s.elt('div', {
+                id: node.attrs.id,
+                class: 'PM-Widget',
+                style: 'width: 100%; min-height: 40px'
+            });
+        }
+    }
+
+    Widget.register('parseDOM', 'div', {
+        parse(dom, state) {
+            state.insert(this, {
+                id: dom.getAttribute('id'),
+                style: dom.getAttribute('style'),
+                class: dom.getAttribute('className')
+            });
+        }
+    })
+
+    var customSchema = new schema.Schema({
+        nodes: defaultSchema.nodeSpec.addToEnd('widget', {
+            type: Widget,
+            group: 'inline'
+        }),
+        marks: defaultSchema.markSpec
+    });
+
+    console.log(customSchema)
+
+    Widget.register('command', 'insert', {
+        derive: {
+            params: [
+                { label: 'Widget ID', attr: 'id' }
+            ]
+        },
+        label: 'Insert widget',
+        menu: {
+            group: 'insert',
+            rank: 20,
+            display: { type: 'label', label: 'Widget' }
+        }
+    });
 }
 
 
@@ -35,7 +90,8 @@ const PROSE_MIRROR_OPTS = {
     menuBar: true,
     tooltipMenu: true,
     autoInput: true,
-    docFormat: 'html'
+    docFormat: 'html',
+    schema: customSchema
 };
 
 

@@ -12,7 +12,5 @@ TODO
 
 
 12/27
- - /about and /admin cache collisions influencing index
  - injected scrips erroring out
  - fix dead links
- - hash tag filters (requires new view) (lowpri)
