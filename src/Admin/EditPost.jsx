@@ -22,6 +22,7 @@ if (!BROWSER) {
     global.navigator = {};
     var ProseMirror = 'textarea';
 } else {
+    // Configure ProseMirror. TODO move this into module.
     var ProseMirror = require('react-prosemirror').default;
     require('prosemirror/dist/inputrules/autoinput');
     require('prosemirror/dist/menu/menubar');
@@ -31,6 +32,8 @@ if (!BROWSER) {
     var defaultSchema = require('prosemirror/dist/model/defaultschema').defaultSchema;
     var schema = require('prosemirror/dist/model/schema');
 
+    // Construct Widget rich text element.
+    // TODO Widget is super naive, add support for multiple elements.
     class Widget extends schema.Inline {
         get attrs() {
             return {};
@@ -43,22 +46,14 @@ if (!BROWSER) {
         }
     }
 
+    // Register widget DOM parser
     Widget.register('parseDOM', 'jn-widget', {
         parse(dom, state) {
             state.insert(this, {});
         }
-    })
-
-    var customSchema = new schema.Schema({
-        nodes: defaultSchema.nodeSpec.addToEnd('widget', {
-            type: Widget,
-            group: 'inline'
-        }),
-        marks: defaultSchema.markSpec
     });
 
-    console.log(customSchema)
-
+    // Register element insert handler
     Widget.register('command', 'insert', {
         derive: {
             params: [
@@ -70,6 +65,15 @@ if (!BROWSER) {
             rank: 20,
             display: { type: 'label', label: 'Widget' }
         }
+    });
+
+    // Construct custom schema based on default with additional Widget
+    var customSchema = new schema.Schema({
+        nodes: defaultSchema.nodeSpec.addToEnd('widget', {
+            type: Widget,
+            group: 'inline'
+        }),
+        marks: defaultSchema.markSpec
     });
 }
 
